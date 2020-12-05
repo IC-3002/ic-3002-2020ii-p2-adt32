@@ -1,4 +1,5 @@
 from dominio import Dominio
+from datos.MatrizCiudades import *
 
 
 class DominioTSP(Dominio):
@@ -46,7 +47,13 @@ class DominioTSP(Dominio):
         """
 
         # Pendiente: implementar este constructor
-        pass
+        self.numCiudad = 0
+        self.ciudad_inicio = ciudad_inicio
+        self.cities, self.matriz = getMatrizCiudad(ciudades_rutacsv)
+        for i in range(0, len(self.cities)):
+            if self.ciudad_inicio == self.cities[i]:
+                self.numCiudad = i
+                break
 
     def validar(self, sol):
         """Valida que la solución dada cumple con los requisitos del problema.
@@ -66,8 +73,21 @@ class DominioTSP(Dominio):
         """
 
         # Pendiente: implementar este método
-        pass
-
+        if len(sol)!= len(self.cities)-1:
+            return False
+        elif self.numMenores(sol) == False:
+            return False
+        
+        
+        elif self.repedidos(sol) == False:
+            return  False
+        
+        elif self.ciudadInicialValdidacion(sol) == False:
+            return  False
+        else:
+            return True
+    
+        
     def texto(self, sol):
         """Construye una representación en hilera legible por humanos de la solución
         con el fin de reportar resultados al usuario final.
@@ -131,3 +151,28 @@ class DominioTSP(Dominio):
 
         # Pendiente: implementar este método
         pass
+
+    def numMenores(self, sol):
+        for i in range(0, len(sol)):
+            if sol[i]> len(self.cities)-1:
+                return False
+        return True
+    def repedidos(self, sol):
+        repetido = []
+
+        unico = []
+        for x in sol:
+            if x not in unico:
+                unico.append(x)
+            else:
+                if x not in repetido:
+                    repetido.append(x)
+        if repetido != []:
+            return False 
+        return True
+    def ciudadInicialValdidacion(self, sol):
+
+        for i in range(0, len(sol)):
+            if self.numCiudad == sol[i]:
+                return False
+        return True
