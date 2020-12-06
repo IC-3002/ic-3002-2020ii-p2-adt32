@@ -2,7 +2,7 @@ import csv
 import random
 
 def getMatrizCiudad(nameFile):
-	fichero = 'datos/'+nameFile
+	fichero = nameFile
 	results = []
 	with open(fichero) as csvfile:
 		reader = csv.reader(csvfile) 

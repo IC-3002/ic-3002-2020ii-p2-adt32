@@ -49,11 +49,15 @@ class DominioTSP(Dominio):
         # Pendiente: implementar este constructor
         self.numCiudad = 0
         self.ciudad_inicio = ciudad_inicio
+        self.numsCiudades = []
         self.cities, self.matriz = getMatrizCiudad(ciudades_rutacsv)
         for i in range(0, len(self.cities)):
             if self.ciudad_inicio == self.cities[i]:
                 self.numCiudad = i
                 break
+        for i in range(0, len(self.cities)):
+            self.numsCiudades.append(i)
+
 
     def validar(self, sol):
         """Valida que la solución dada cumple con los requisitos del problema.
@@ -77,8 +81,6 @@ class DominioTSP(Dominio):
             return False
         elif self.numMenores(sol) == False:
             return False
-        
-        
         elif self.repedidos(sol) == False:
             return  False
         
@@ -104,7 +106,11 @@ class DominioTSP(Dominio):
         """
 
         # Pendiente: implementar este método
-        pass
+        hilera = self.cities[self.numCiudad]+' -> '
+        for i in range(0, len(sol)):
+            hilera+= self.cities[sol[i]]+ ' -> '
+        hilera+= self.cities[self.numCiudad]
+        return hilera
 
     def generar(self):
         """Construye aleatoriamente una lista que representa una posible solución al problema.
@@ -118,6 +124,7 @@ class DominioTSP(Dominio):
 
         # Pendiente: implementar este método
         pivot = list(range(0,len(self.cities))) 
+        pivot.remove(self.numCiudad)
         random.shuffle(pivot)
 
         return pivot
@@ -134,7 +141,16 @@ class DominioTSP(Dominio):
         """
 
         # Pendiente: implementar este método
-        pass
+
+        costo = 0.0
+        copy = []
+        copy.append(self.numCiudad)
+        for i in range(0, len(sol)):
+            copy.append(sol[i])
+        copy.append(self.numCiudad)
+        for i in range(0, len(copy)-1):
+            costo += float(self.matriz[copy[i]][copy[i+1]])
+        return costo
 
     def vecino(self, sol):
         """Calcula una solución vecina a partir de una solución dada.
@@ -154,18 +170,18 @@ class DominioTSP(Dominio):
 
         # Pendiente: implementar este método
         end = []
-        i   = 0
+
+        for i in range(0, len(sol)):
+            end.append(sol[i])
 
         randX = random.randint(0, len(sol)-1)
         randY = random.randint(0, len(sol)-1)
         while(randX == randY):
             randX = random.randint(0, len(sol)-1)
             randY = random.randint(0, len(sol)-1)
-        temp = sol[randX]
-        sol[randX] = sol[randY]
-        sol[randY] = temp
-        end = sol
-
+        temp = end[randX]
+        end[randX] = end[randY]
+        end[randY] = temp
         return end
 
     def numMenores(self, sol):

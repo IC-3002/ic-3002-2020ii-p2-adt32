@@ -43,12 +43,15 @@ class DominioAGTSP(DominioAG, DominioTSP):
         
         # Pendiente: implementar este constructor
         self.numCiudad = 0
+        self.numsCiudades = []
         self. ciudad_inicio = ciudad_inicio
         self.cities, self.matriz = getMatrizCiudad(ciudades_rutacsv)
         for i in range(0, len(self.cities)):
             if self.ciudad_inicio == self.cities[i]:
                 self.numCiudad = i
                 break
+        for i in range(0, len(self.cities)):
+            self.numsCiudades.append(i)
 
 
     def generar_n(self, n):
@@ -67,8 +70,10 @@ class DominioAGTSP(DominioAG, DominioTSP):
         # Pendiente: implementar este método
 
         solutions = []
+
         for i in range(0, n):
             pivot = list(range(0,len(self.cities))) 
+            pivot.remove(self.numCiudad)
             random.shuffle(pivot)
             solutions.append(pivot)
         return solutions
@@ -91,19 +96,24 @@ class DominioAGTSP(DominioAG, DominioTSP):
         end = []
         i   = 0
         while(len(sol_a)> i):
-
             if sol_a[i] == sol_b[i]:
                 end.append(sol_a[i])
                 i+=1
             else:
-                x= random.randint(0, len(self.cities))
-                while (True):
-                    if x in end:    
-                        x= random.randint(0, len(self.cities))
-                    else:
-                        break;
-                end.append(x)
+                end.append('x')
                 i+=1
+        for i in range(0, len(end)):
+            if end[i] == 'x':
+                control = True
+                while(control):
+                    x = random.randint(0, len(self.cities)-1)
+                    if x == self.numCiudad:
+                        x = random.randint(0, len(self.cities)-1)
+                    elif x in end:
+                        x = random.randint(0, len(self.cities)-1)
+                    else:
+                        end[i] = x
+                        control = False
 
         return end
 
@@ -122,19 +132,16 @@ class DominioAGTSP(DominioAG, DominioTSP):
 
         # Pendiente: implementar este método
         end = []
-        i   = 0
+
+        for i in range(0, len(sol)):
+            end.append(sol[i])
 
         randX = random.randint(0, len(sol)-1)
         randY = random.randint(0, len(sol)-1)
         while(randX == randY):
             randX = random.randint(0, len(sol)-1)
             randY = random.randint(0, len(sol)-1)
-        temp = sol[randX]
-        sol[randX] = sol[randY]
-        sol[randY] = temp
-        end = sol
-
+        temp = end[randX]
+        end[randX] = end[randY]
+        end[randY] = temp
         return end
-
-x = DominioAGTSP("ciudades_cr_pruebas.csv","Alajuela")
-print(x.generar_n(5))
