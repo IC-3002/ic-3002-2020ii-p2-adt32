@@ -46,7 +46,7 @@ class DominioAGTSP(DominioAG, DominioTSP):
         self. ciudad_inicio = ciudad_inicio
         self.cities, self.matriz = getMatrizCiudad(ciudades_rutacsv)
         for i in range(0, len(self.cities)):
-            if self.ciudad_inicio == self.cities.get(i):
+            if self.ciudad_inicio == self.cities[i]:
                 self.numCiudad = i
                 break
 

@@ -117,7 +117,10 @@ class DominioTSP(Dominio):
         """
 
         # Pendiente: implementar este método
-        pass
+        pivot = list(range(0,len(self.cities))) 
+        random.shuffle(pivot)
+
+        return pivot
 
     def fcosto(self, sol):
         """Calcula el costo asociado con una solución dada.
@@ -150,7 +153,20 @@ class DominioTSP(Dominio):
         """
 
         # Pendiente: implementar este método
-        pass
+        end = []
+        i   = 0
+
+        randX = random.randint(0, len(sol)-1)
+        randY = random.randint(0, len(sol)-1)
+        while(randX == randY):
+            randX = random.randint(0, len(sol)-1)
+            randY = random.randint(0, len(sol)-1)
+        temp = sol[randX]
+        sol[randX] = sol[randY]
+        sol[randY] = temp
+        end = sol
+
+        return end
 
     def numMenores(self, sol):
         for i in range(0, len(sol)):
