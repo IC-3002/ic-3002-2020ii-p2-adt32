@@ -42,7 +42,7 @@ class DominioAGTSP(DominioAG, DominioTSP):
         """
         
         # Pendiente: implementar este constructor
-        self.numCiudad = 0
+        self.numCiudad = 'x'
         self.numsCiudades = []
         self. ciudad_inicio = ciudad_inicio
         self.cities, self.matriz = getMatrizCiudad(ciudades_rutacsv)
@@ -73,7 +73,8 @@ class DominioAGTSP(DominioAG, DominioTSP):
 
         for i in range(0, n):
             pivot = list(range(0,len(self.cities))) 
-            pivot.remove(self.numCiudad)
+            if self.numCiudad != 'x':
+                pivot.remove(self.numCiudad)
             random.shuffle(pivot)
             solutions.append(pivot)
         return solutions

@@ -25,18 +25,31 @@ def optimizar(dominio, tam_pobl, porc_elite, prob_mut, reps):
     """
 
     # Pendiente: implementar este método
-    pobl = dominio.generar(tam_pobl)
-    while reps > 0:
+    pobl = dominio.generar_n(tam_pobl)
+    while reps >= 0:
+        px = []
+        for sol in pobl:
+            aptitud = dominio.fcosto(sol)
+            tupla = (sol, aptitud)
+            px.append(tupla)
 
-        for i in range(0, pobl):
-            sol.aptitud = dominio.fcosto(sol)
+        px.sort(key=lambda x: x[1]) #llave aptitud
+        for i in range(0, len(px)):
+            pobl[i] = px[i][0]
+        num_padres = int(len(pobl) * porc_elite)
+        num_hijos = int(len(pobl) - num_padres)
+        if num_padres != 0:
+            sig_gen = pobl[0: num_padres]
+        else:
+            for sol in pobl:
+                aptitud = dominio.fcosto(sol)
+                tupla = (sol, aptitud)
+                print(tupla)
+                px.append(tupla)
+                px.sort(key=lambda x: x[1]) #llave aptitud
+            return px[0][0]
 
-        pobl.sort(key=lambda x: x[1]) #llave aptitud
-        num_padres = len(pobl) * porc_elite
-        num_hijos = len(pobl) - num_padres
-        sig_gen = pobl[0: num_padres]
         descendencia = []
-
         while num_hijos > 0:
             padreA = sig_gen[random.randrange(0, len(sig_gen))]
             padreB = sig_gen[random.randrange(0, len(sig_gen))]
@@ -47,7 +60,9 @@ def optimizar(dominio, tam_pobl, porc_elite, prob_mut, reps):
                 hijo = dominio.mutar(hijo)
             descendencia.append(hijo)
             num_hijos = num_hijos - 1
-        pobl = sig_gen.append(descendencia)
-        n = n - 1
 
-    return pobl 
+        sig_gen = descendencia
+        pobl = sig_gen
+        reps = reps - 1
+        print(sig_gen)
+

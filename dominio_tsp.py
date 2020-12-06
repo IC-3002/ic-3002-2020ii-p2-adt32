@@ -47,7 +47,7 @@ class DominioTSP(Dominio):
         """
 
         # Pendiente: implementar este constructor
-        self.numCiudad = 0
+        self.numCiudad = 'x'
         self.ciudad_inicio = ciudad_inicio
         self.numsCiudades = []
         self.cities, self.matriz = getMatrizCiudad(ciudades_rutacsv)
@@ -75,9 +75,10 @@ class DominioTSP(Dominio):
         Salidas:
         (bool) True si la solución es válida, False en cualquier otro caso
         """
-
         # Pendiente: implementar este método
-        if len(sol)!= len(self.cities)-1:
+        if self.numCiudad == 'x':
+            return False
+        elif len(sol)!= len(self.cities)-1:
             return False
         elif self.numMenores(sol) == False:
             return False
@@ -124,7 +125,8 @@ class DominioTSP(Dominio):
 
         # Pendiente: implementar este método
         pivot = list(range(0,len(self.cities))) 
-        pivot.remove(self.numCiudad)
+        if self.numCiudad != 'x':
+            pivot.remove(self.numCiudad)
         random.shuffle(pivot)
 
         return pivot
@@ -144,10 +146,12 @@ class DominioTSP(Dominio):
 
         costo = 0.0
         copy = []
-        copy.append(self.numCiudad)
+        if self.numCiudad != 'x':
+            copy.append(self.numCiudad)
         for i in range(0, len(sol)):
             copy.append(sol[i])
-        copy.append(self.numCiudad)
+        if self.numCiudad != 'x':
+            copy.append(self.numCiudad)
         for i in range(0, len(copy)-1):
             costo += float(self.matriz[copy[i]][copy[i+1]])
         return costo
