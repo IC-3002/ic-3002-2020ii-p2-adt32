@@ -4,7 +4,7 @@ import random
 def getMatrizCiudad(nameFile):
 	fichero = nameFile
 	results = []
-	with open(fichero,encoding="utf-8") as csvfile:
+	with open(fichero) as csvfile:
 		reader = csv.reader(csvfile) 
 		for lista in reader: # Cada fila es una lista
 			results.append(lista)
