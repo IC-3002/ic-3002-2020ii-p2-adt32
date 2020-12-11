@@ -80,6 +80,7 @@ class DominioAGTSP(DominioAG, DominioTSP):
         return solutions
 
     def cruzar(self, sol_a, sol_b):
+
         """Produce una nueva posible solución cruzando las dos soluciones dadas por parámetro.
         Entradas:
         sol_a (estructura de datos)
@@ -94,29 +95,48 @@ class DominioAGTSP(DominioAG, DominioTSP):
 
         # Pendiente: implementar este método
 
-        end = []
-        i   = 0
-        while(len(sol_a)> i):
-            if sol_a[i] == sol_b[i]:
-                end.append(sol_a[i])
-                i+=1
-            else:
-                end.append('x')
-                i+=1
-        for i in range(0, len(end)):
-            if end[i] == 'x':
-                control = True
-                while(control):
-                    x = random.randint(0, len(self.cities)-1)
-                    if x == self.numCiudad:
-                        x = random.randint(0, len(self.cities)-1)
-                    elif x in end:
-                        x = random.randint(0, len(self.cities)-1)
-                    else:
-                        end[i] = x
-                        control = False
+        puntoDeCruce = len(sol_a)//2
 
-        return end
+        parte1A = sol_a[0:puntoDeCruce]
+        parte1B = sol_a[puntoDeCruce:]
+
+        parte2A = sol_b[0:puntoDeCruce]
+        parte2B = sol_b[puntoDeCruce:]
+
+        sol_final = parte1A + parte2B
+
+        unico = []
+        unicoPos = []
+        repetido = []
+        repetidoPos = []
+
+        for x in range(0,len(sol_final)):
+            if sol_final[x] not in unico:
+                unico.append(sol_final[x])
+                unicoPos.append(x)
+
+            else:
+                if x not in repetido:
+                    repetido.append(sol_final[x])
+                    repetidoPos.append(x)
+                    
+        for i in range(0, len(repetido)):
+            control = True
+            while(control):
+                x = random.randint(0, len(self.cities)-1)
+                if x == self.numCiudad:
+                    x = random.randint(0, len(self.cities)-1)
+                elif x in repetido:
+                    x = random.randint(0, len(self.cities)-1)
+                elif x in sol_final:
+                    x = random.randint(0, len(self.cities)-1)
+                else:
+                    sol_final[repetidoPos[i]] = x
+                    control = False
+        return sol_final
+
+
+
 
     def mutar(self, sol):
         """Produce una nueva solución aplicando un ligero cambio a la solución dada por

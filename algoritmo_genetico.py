@@ -38,17 +38,7 @@ def optimizar(dominio, tam_pobl, porc_elite, prob_mut, reps):
             pobl[i] = px[i][0]
         num_padres = int(len(pobl) * porc_elite)
         num_hijos = int(len(pobl) - num_padres)
-        if num_padres != 0:
-            sig_gen = pobl[0: num_padres]
-        else:
-            for sol in pobl:
-                aptitud = dominio.fcosto(sol)
-                tupla = (sol, aptitud)
-                print(tupla)
-                px.append(tupla)
-                px.sort(key=lambda x: x[1]) #llave aptitud
-            return px[0][0]
-
+        sig_gen = pobl[0:num_padres]
         descendencia = []
         while num_hijos > 0:
             padreA = sig_gen[random.randrange(0, len(sig_gen))]
@@ -61,8 +51,9 @@ def optimizar(dominio, tam_pobl, porc_elite, prob_mut, reps):
             descendencia.append(hijo)
             num_hijos = num_hijos - 1
 
-        sig_gen = descendencia
+        
+        sig_gen+=descendencia
         pobl = sig_gen
         reps = reps - 1
-        print(sig_gen)
+    return pobl[0]
 
