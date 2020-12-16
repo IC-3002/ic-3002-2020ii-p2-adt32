@@ -1,4 +1,5 @@
 from dominio import Dominio
+from datos.MatrizCiudades import *
 
 
 class DominioTSP(Dominio):
@@ -46,7 +47,17 @@ class DominioTSP(Dominio):
         """
 
         # Pendiente: implementar este constructor
-        pass
+        self.numCiudad = 'x'
+        self.ciudad_inicio = ciudad_inicio
+        self.numsCiudades = []
+        self.cities, self.matriz = getMatrizCiudad(ciudades_rutacsv)
+        for i in range(0, len(self.cities)):
+            if self.ciudad_inicio == self.cities[i]:
+                self.numCiudad = i
+                break
+        for i in range(0, len(self.cities)):
+            self.numsCiudades.append(i)
+
 
     def validar(self, sol):
         """Valida que la solución dada cumple con los requisitos del problema.
@@ -64,10 +75,22 @@ class DominioTSP(Dominio):
         Salidas:
         (bool) True si la solución es válida, False en cualquier otro caso
         """
-
         # Pendiente: implementar este método
-        pass
-
+        if self.numCiudad == 'x':
+            return False
+        elif len(sol)!= len(self.cities)-1:
+            return False
+        elif self.numMenores(sol) == False:
+            return False
+        elif self.repedidos(sol) == False:
+            return  False
+        
+        elif self.ciudadInicialValdidacion(sol) == False:
+            return  False
+        else:
+            return True
+    
+        
     def texto(self, sol):
         """Construye una representación en hilera legible por humanos de la solución
         con el fin de reportar resultados al usuario final.
@@ -84,7 +107,11 @@ class DominioTSP(Dominio):
         """
 
         # Pendiente: implementar este método
-        pass
+        hilera = self.cities[self.numCiudad]+' -> '
+        for i in range(0, len(sol)):
+            hilera+= self.cities[sol[i]]+ ' -> '
+        hilera+= self.cities[self.numCiudad]
+        return hilera
 
     def generar(self):
         """Construye aleatoriamente una lista que representa una posible solución al problema.
@@ -97,7 +124,12 @@ class DominioTSP(Dominio):
         """
 
         # Pendiente: implementar este método
-        pass
+        pivot = list(range(0,len(self.cities))) 
+        if self.numCiudad != 'x':
+            pivot.remove(self.numCiudad)
+        random.shuffle(pivot)
+
+        return pivot
 
     def fcosto(self, sol):
         """Calcula el costo asociado con una solución dada.
@@ -111,7 +143,18 @@ class DominioTSP(Dominio):
         """
 
         # Pendiente: implementar este método
-        pass
+
+        costo = 0.0
+        copy = []
+        if self.numCiudad != 'x':
+            copy.append(self.numCiudad)
+        for i in range(0, len(sol)):
+            copy.append(sol[i])
+        if self.numCiudad != 'x':
+            copy.append(self.numCiudad)
+        for i in range(0, len(copy)-1):
+            costo += float(self.matriz[copy[i]][copy[i+1]])
+        return costo
 
     def vecino(self, sol):
         """Calcula una solución vecina a partir de una solución dada.
@@ -130,4 +173,42 @@ class DominioTSP(Dominio):
         """
 
         # Pendiente: implementar este método
-        pass
+        end = []
+
+        for i in range(0, len(sol)):
+            end.append(sol[i])
+
+        randX = random.randint(0, len(sol)-1)
+        randY = random.randint(0, len(sol)-1)
+        while(randX == randY):
+            randX = random.randint(0, len(sol)-1)
+            randY = random.randint(0, len(sol)-1)
+        temp = end[randX]
+        end[randX] = end[randY]
+        end[randY] = temp
+        return end
+
+    def numMenores(self, sol):
+        for i in range(0, len(sol)):
+            if sol[i]> len(self.cities)-1:
+                return False
+        return True
+    def repedidos(self, sol):
+        repetido = []
+
+        unico = []
+        for x in sol:
+            if x not in unico:
+                unico.append(x)
+            else:
+                if x not in repetido:
+                    repetido.append(x)
+        if repetido != []:
+            return False 
+        return True
+    def ciudadInicialValdidacion(self, sol):
+
+        for i in range(0, len(sol)):
+            if self.numCiudad == sol[i]:
+                return False
+        return True

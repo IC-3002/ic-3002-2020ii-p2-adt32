@@ -1,3 +1,4 @@
+import random
 
 def optimizar(dominio, tam_pobl, porc_elite, prob_mut, reps):
     """Algoritmo genético para optimización estocástica.
@@ -24,4 +25,35 @@ def optimizar(dominio, tam_pobl, porc_elite, prob_mut, reps):
     """
 
     # Pendiente: implementar este método
-    pass
+    pobl = dominio.generar_n(tam_pobl)
+    while reps >= 0:
+        px = []
+        for sol in pobl:
+            aptitud = dominio.fcosto(sol)
+            tupla = (sol, aptitud)
+            px.append(tupla)
+
+        px.sort(key=lambda x: x[1]) #llave aptitud
+        for i in range(0, len(px)):
+            pobl[i] = px[i][0]
+        num_padres = int(len(pobl) * porc_elite)
+        num_hijos = int(len(pobl) - num_padres)
+        sig_gen = pobl[0:num_padres]
+        descendencia = []
+        while num_hijos > 0:
+            padreA = sig_gen[random.randrange(0, len(sig_gen))]
+            padreB = sig_gen[random.randrange(0, len(sig_gen))]
+            hijo = dominio.cruzar(padreA, padreB)
+            p = random.uniform(0, 1)
+
+            if p <= prob_mut:
+                hijo = dominio.mutar(hijo)
+            descendencia.append(hijo)
+            num_hijos = num_hijos - 1
+
+        
+        sig_gen+=descendencia
+        pobl = sig_gen
+        reps = reps - 1
+    return pobl[0]
+

@@ -1,3 +1,5 @@
+import math, random
+
 def optimizar(dominio, temperatura = 10e32, tasa_enfriamiento = 0.95):
     """Algoritmo de optimización estocástica simulated annealing.
 
@@ -18,4 +20,17 @@ def optimizar(dominio, temperatura = 10e32, tasa_enfriamiento = 0.95):
     """
 
     # Pendiente: implementar esta función
-    pass
+
+    sol = dominio.generar()
+    costo = dominio.fcosto(sol)
+    while temperatura > tasa_enfriamiento:
+        solPrima = dominio.vecino(sol)
+        costoPrima = dominio.fcosto(sol)
+        p = math.exp(-(costoPrima-costo)/temperatura)
+        pAzar= random.uniform(0, 1)
+        if (costoPrima < costo) or (pAzar <= p):
+            sol = solPrima
+            costo = costoPrima
+        temperatura = temperatura * tasa_enfriamiento
+    return sol
+
